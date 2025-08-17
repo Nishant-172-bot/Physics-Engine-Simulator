@@ -13,14 +13,6 @@ constexpr float PI = 3.14159265358979323846f;
 constexpr float TIME_SCALE = 9999999.f;   // Speed time up for visible orbits
 constexpr float AU = 150.f;
 
-sf::Color lerpColor(const sf::Color& a, const sf::Color& b, float t) {
-    return sf::Color(
-        static_cast<sf::Uint8>(a.r + (b.r - a.r) * t),
-        static_cast<sf::Uint8>(a.g + (b.g - a.g) * t),
-        static_cast<sf::Uint8>(a.b + (b.b - a.b) * t),
-        static_cast<sf::Uint8>(a.a + (b.a - a.a) * t)
-    );
-}
 
 struct Star {
     sf::CircleShape shape;
@@ -85,99 +77,6 @@ struct Planet {
     }
 };
 
-class RoundedRectangleShape : public sf::Drawable, public sf::Transformable {
-    float radius;
-    sf::RectangleShape rect;
-    sf::CircleShape circleTL, circleTR, circleBL, circleBR;
-
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-        states.transform *= getTransform();
-        target.draw(rect, states);
-        target.draw(circleTL, states);
-        target.draw(circleTR, states);
-        target.draw(circleBL, states);
-        target.draw(circleBR, states);
-    }
-
-public:
-    RoundedRectangleShape(const sf::Vector2f& size = { 0, 0 }, float r = 0.f) : radius(r) {
-        rect.setSize({ size.x - 2 * radius, size.y });
-        rect.setPosition(radius, 0);
-
-        circleTL.setRadius(radius);
-        circleTL.setPointCount(32);
-        circleTL.setPosition(0, 0);
-
-        circleTR.setRadius(radius);
-        circleTR.setPointCount(32);
-        circleTR.setPosition(size.x - 2 * radius, 0);
-
-        circleBL.setRadius(radius);
-        circleBL.setPointCount(32);
-        circleBL.setPosition(0, size.y - 2 * radius);
-
-        circleBR.setRadius(radius);
-        circleBR.setPointCount(32);
-        circleBR.setPosition(size.x - 2 * radius, size.y - 2 * radius);
-
-        rect.setFillColor(sf::Color::White);
-        circleTL.setFillColor(sf::Color::White);
-        circleTR.setFillColor(sf::Color::White);
-        circleBL.setFillColor(sf::Color::White);
-        circleBR.setFillColor(sf::Color::White);
-    }
-
-    void setFillColor(const sf::Color& color) {
-        rect.setFillColor(color);
-        circleTL.setFillColor(color);
-        circleTR.setFillColor(color);
-        circleBL.setFillColor(color);
-        circleBR.setFillColor(color);
-    }
-
-    sf::Color getFillColor() const {
-        return rect.getFillColor();
-    }
-
-    void setOutlineColor(const sf::Color& color) {
-        rect.setOutlineColor(color);
-        circleTL.setOutlineColor(color);
-        circleTR.setOutlineColor(color);
-        circleBL.setOutlineColor(color);
-        circleBR.setOutlineColor(color);
-
-        rect.setOutlineThickness(2.f);
-        circleTL.setOutlineThickness(2.f);
-        circleTR.setOutlineThickness(2.f);
-        circleBL.setOutlineThickness(2.f);
-        circleBR.setOutlineThickness(2.f);
-    }
-
-    void setOutlineThickness(float thickness) {
-        rect.setOutlineThickness(thickness);
-        circleTL.setOutlineThickness(thickness);
-        circleTR.setOutlineThickness(thickness);
-        circleBL.setOutlineThickness(thickness);
-        circleBR.setOutlineThickness(thickness);
-    }
-
-    void setSize(const sf::Vector2f& size) {
-        rect.setSize({ size.x - 2 * radius, size.y });
-        circleTR.setPosition(size.x - 2 * radius, 0);
-        circleBL.setPosition(0, size.y - 2 * radius);
-        circleBR.setPosition(size.x - 2 * radius, size.y - 2 * radius);
-    }
-
-    sf::Vector2f getSize() const {
-        return { rect.getSize().x + 2 * radius, rect.getSize().y };
-    }
-
-    sf::FloatRect getGlobalBounds() const {
-        sf::Transform t = getTransform();
-        sf::FloatRect localBounds(0.f, 0.f, getSize().x, getSize().y);
-        return t.transformRect(localBounds);
-    }
-};
 
 void runOrbitSimulation() {
     sf::RenderWindow window(sf::VideoMode(1280, 900), "Solar System with Revolution Only", sf::Style::Close);

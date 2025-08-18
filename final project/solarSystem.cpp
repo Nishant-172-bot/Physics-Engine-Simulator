@@ -211,11 +211,8 @@ void runOrbitSimulation() {
 
         window.clear(sf::Color(5, 5, 15));
 
+        // Draw Stars
         for (auto& star : stars) {
-            float alpha = (std::sin(star.twinkleSpeed * clock.getElapsedTime().asSeconds() + star.twinklePhase) * 0.5f + 0.5f) * 255.f;
-            sf::Color c = star.shape.getFillColor();
-            c.a = static_cast<sf::Uint8>(alpha);
-            star.shape.setFillColor(c);
             window.draw(star.shape);
         }
 
